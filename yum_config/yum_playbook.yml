@@ -1,0 +1,21 @@
+- hosts: all
+  tasks: 
+  - file: 
+      state: directory
+      path: "/dvd"
+  - mount:
+      src: "/dev/sr0"
+      path: "/dvd"
+      state: mounted
+      fstype: "iso9660"
+  - yum_repository:
+      baseurl: "/dvd/AppStream"
+      name: "AppStream_repo"
+      description: "This repo holds all appstream repos"
+      gpgcheck: no
+  - yum_repository:
+      baseurl: "/dvd/BaseOS"
+      name: "BaseOS"
+      description: "This repo holds all BaseOS repos"
+      gpgcheck: no
+
