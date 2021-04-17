@@ -1,0 +1,1 @@
+192.168.29.223 ansible_ssh_user=root ansible_ssh_pass=skgagan66

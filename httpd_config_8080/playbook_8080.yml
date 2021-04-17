@@ -1,0 +1,61 @@
+- hosts: all
+  tasks:
+    - name: create directory of dvd
+      file:
+        path: /dvd
+        state: directory
+
+    - name: mount the dvd drive
+      mount:
+        path: /dvd
+        src: /dev/sr0
+        fstype: iso9660
+        state: mounted
+
+    - name: configuring BaseOS
+      yum_repository:
+        name: BaseOS
+        description: BaseOS repo
+        file: mydvd
+        baseurl: file:///dvd/BaseOS
+        gpgcheck: no
+
+    - name: configuring AppStream
+      yum_repository:
+        name: AppStream
+        description: Appstream Repo
+        file: mydvd
+        baseurl: file:///dvd/AppStream
+        gpgcheck: no
+
+    - name: intalling httpd package
+      package: 
+        name: httpd
+        state: present
+
+    - name: creating directory
+      file: 
+        path: /var/www/gagan
+        state: directory
+
+    - name: copying the website
+      copy:
+        src: index.html 
+        dest: /var/www/gagan
+
+    - name: updating the conf file
+      copy:
+        src: httpd.conf
+        dest: /etc/httpd/conf.d/httpd.conf
+        
+    - name: starting the service
+      service:
+        name: httpd
+        state: restarted
+
+    - name: enable the port 80
+      firewalld:
+        port: 8080/tcp
+        permanent: yes
+        state: enabled
+        immediate: yes 
