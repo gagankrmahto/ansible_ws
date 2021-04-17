@@ -1,0 +1,37 @@
+- hosts: all
+  tasks:
+    - package: 
+        name:
+          - httpd
+          - python36
+    
+    - copy: 
+        dest: "/var/www/html/index.html"
+        content: "Website secured with httpd authentication"
+  
+    - replace:
+        path: "/etc/httpd/conf/httpd.conf"
+        regexp: "AllowOverride None"
+        replace: "AllowOverride AuthConfig"
+
+    - copy:
+        dest: "/var/www/html/.htaccess"
+        src: ".htaccess"
+
+    - pip:
+        name: passlib
+
+    - htpasswd:
+        path: "/etc/www.passwd"
+        name: "gagan"
+        password: "skgagan66"
+
+    - service:
+        name: httpd
+        state: started
+
+    - firewalld:
+        immediate: yes
+        port: 80/tcp
+        state: enabled
+
